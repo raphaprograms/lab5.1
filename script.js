@@ -13,6 +13,11 @@ addItemBtn.addEventListener('click', function() {
     const productName = productInput.value;
     const productPrice = Number(priceInput.value);
 
+    if (productName == '' || productPrice == NaN || productPrice == '' || productPrice <= 0) {
+        alert('Plese enter a valid product name and only a possitve number for price!')
+        return;
+    }
+
     console.log(productName);
     console.log(productPrice);
 
@@ -62,7 +67,7 @@ cart.addEventListener('click', (event) => {
     }
 
     console.log(pricesTracker);
-    
+
     if (event.target.classList.contains('item')) {
         event.target.classList.toggle('completed');
     }
