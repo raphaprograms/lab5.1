@@ -6,10 +6,12 @@ const productList = document.getElementById('list');
 const cartItemCount = document.getElementById('count');
 const cartPriceCount = document.getElementById('price');
 
+const pricesTracker = [];
+
 addItemBtn.addEventListener('click', function() {
     // get input
     const productName = productInput.value;
-    const productPrice = priceInput.value;
+    const productPrice = Number(priceInput.value);
 
     console.log(productName);
     console.log(productPrice);
@@ -18,6 +20,11 @@ addItemBtn.addEventListener('click', function() {
     const product = document.createElement('li');
     product.textContent = `${productName} ${productPrice}`;
     product.classList.add('item');
+
+
+    // add price to array for price tracking
+    pricesTracker.push(productPrice);
+    console.log(pricesTracker);
 
     // create remove button
     const removeBtn = document.createElement('button');
@@ -29,16 +36,33 @@ addItemBtn.addEventListener('click', function() {
     cart.appendChild(product);
     
     countProducts();
+    trackPrices();
+
+    productInput.focus();
 
 });
 
 cart.addEventListener('click', (event) => {
     if (event.target.classList.contains('remove')) {
-        event.target.closest('li').remove();
+        const listItem = event.target.closest('li');
+
+        // find all li items to get the index of the one to be removed
+        const items = Array.from(cart.querySelectorAll('.item'));
+        const index = items.indexOf(listItem);
+
+        // remove the price from the pricesTracker array
+        if (index > -1) {
+            pricesTracker.splice(index, 1);
+        }
+
+        listItem.remove();
 
         countProducts();
+        trackPrices();
     }
 
+    console.log(pricesTracker);
+    
     if (event.target.classList.contains('item')) {
         event.target.classList.toggle('completed');
     }
@@ -50,4 +74,9 @@ function countProducts() {
     console.log(products.length);
 
     cartItemCount.textContent = products.length;
+}
+
+function trackPrices() {
+    let totalPrice = pricesTracker.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    cartPriceCount.textContent = `$${totalPrice}`;
 }
